@@ -28,8 +28,9 @@ public:
 		this->tag=tag;
 		this->email=email;
 		this->password=password;
+		numberOfUsers++;
 	}
-    virtual void setup() //unos korisnika
+    void setup() //unos korisnika
     {
     	cout << "First name: ";
     	cin >> name;
@@ -89,7 +90,7 @@ public:
 	void changePassword()
 	{
 		string newPassword;
-        cout << "Type."<<endl;
+        cout << "Password:"<<endl;
         cin >> newPassword;
        	password=newPassword;
 	}

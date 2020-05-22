@@ -1,10 +1,14 @@
 #ifndef DISCORD_HPP_INCLUDED
 #define DISCORD_HPP_INCLUDED
+#include <iostream>
 
+using namespace std;
+
+#include "Server.hpp"
 class Discord
 {
 private:
-	vector<User> users;
+	vector<User*> users;
 	vector<Server> servers;
 	string serverFile;
 	string usersFile;
@@ -14,7 +18,7 @@ public:
 		this->serverFile=serverFile;
 		this->usersFile=usersFile;
 		loadUsers();
-        loadServers();
+        //loadServers();
 	}
 	User* login()
     {
@@ -36,19 +40,26 @@ public:
         	cout << "Unsuccesful login. Try again.\n";
     	}
 	}
+	void signUp()
+    {
+        User* userPointer=new User;
+        userPointer->setup();
+        users.push_back((User*)userPointer);
+    }
+
 	void loadUsers()
     {
         ifstream file(usersFile);
         if (file.is_open())
         {
-            string name,lastName,username,tag,email,password;
+            string name,lastName,username,email,password;
+            int tag;
             while(!file.eof())
             {
                 file>>name>>lastName>>username>>tag>>email>>password;
                 if(file.eof()) break;
-                
-                    User* userPointer=new Korisnik(name,lastName,username,tag,email,password);
-                    User::numberOfUsers++;
+
+                    User* userPointer=new User(name,lastName,username,tag,email,password);
                     users.push_back(userPointer);
             }
             file.close();
@@ -64,14 +75,15 @@ public:
         ofstream file(usersFile);
         for(auto i=users.begin();i!=users.end();i++)
         {
-            file<<i->getName()<<" ";
-            file<<i->getLastName()<<" ";
-            file<<i->getUsername()<<" ";
-            file<<i->getTag()<<" ";
-            file<<i->getEmail()<<" ";
-            file<<i->getPassword()<<" ";
+            file<<(*i)->getName()<<" ";
+            file<<(*i)->getLastName()<<" ";
+            file<<(*i)->getUsername()<<" ";
+            file<<(*i)->getTag()<<" ";
+            file<<(*i)->getEmail()<<" ";
+            file<<(*i)->getPassword()<<" ";
         }
         file.close();
     }
+
 }
 #endif // DISCORD_HPP_INCLUDED
