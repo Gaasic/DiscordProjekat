@@ -8,54 +8,63 @@
 class Chat
 {
 protected:
-	vector<Message> messagez;
-	vector<User> participants;
+	vector<Message*> messagez;
+	User* sender;
+	User* receiver;
 	string name;
 public:
-	Chat(User user,User receiver)
+	Chat(User* sender,User* receiver)
 	{
-		participants.push_back(user);
-		participants.push_back(receiver);
-		if(user.getTag()<receiver.getTag())
-			name=user.getUsername()+" "+receiver.getUsername();
+		this->sender=sender;
+		this->receiver=receiver;
+		if(sender->getTag()<receiver->getTag())
+			name=sender->getUsername()+"_"+receiver->getUsername()+".txt";
 		else
-			name=receiver.getUsername()+" "+user.getUsername();
+			name=receiver->getUsername()+"_"+sender->getUsername()+".txt";
 	}
-	void addParticipant(User participant)
-	{
-		if(participants.size()<10)
-		{
-			participants.push_back(participant);
-		}
-		else
-		{
-			cout<< "Maximum number of participants reached."<<endl;
-		}
-	}
-	/*void removeParicipant(User paricipant) //admin
-	{
-
-	}*/
-	void sendMessage(User user)
+	void sendMessage()
 	{
 		string text;
-		cin>>text;
-		Message message(text,user.getUsername());
-		messagez.push_back(message);
+		fflush(stdin);
+		getline(cin,text);
+		Message* messagePointer=new Message(text,sender->getUsername());
+		messagez.push_back(messagePointer);
 
 	}
-	void loadMessage()
+	void printDM()
 	{
-		ifstream file(name+".txt");
+        for(auto i=messagez.begin();i!=messagez.end();i++)
+        {
+            cout<<(*i)->getAuthor()<<":"<<endl;
+            cout<<(*i)->getText()<<endl;
+        }
+	}
+	void saveMessages()
+	{
+        ofstream file;
+        file.open(name);
+        for(auto i=messagez.begin();i!=messagez.end();i++)
+        {
+            if(i!=messagez.begin())
+                file<<endl;
+            file<<(*i)->getText()<<"|";
+            file<<(*i)->getAuthor();
+        }
+        file.close();
+	}
+	void loadMessages()
+	{
+		ifstream file;
+		file.open(name);
         if (file.is_open())
         {
             string text,author,line;
             while(!file.eof())
             {
-                getline(cin,line);
+                getline(file,line);
                 NizTokena segment(line,'|');
-                Message message(segment.tokeni[0],segment.tokeni[1]);
-                messagez.push_back(message);
+                Message* messagePointer= new Message(segment.tokeni[0],segment.tokeni[1]);
+                messagez.push_back(messagePointer);
             }
             file.close();
         }
@@ -66,16 +75,26 @@ public:
 	}
 };
 
-class TextChannel : public Chat
+class TextChannel
 {
 	private:
-		string topic="";
-		bool nsfw="";
+		string name;
+		string topic;
+		vector<Message*> messagez;
+		bool nsfw;
 	public:
+		TextChannel(string name,topic="",bool nsfw=false)
+		{
+			this->name=name;
+			this->topic=topic;
+			this->nsfw=nsfw;
+		}
 		bool getNsfw()const {return nsfw;}
 		string getTopic()const {return topic;}
+		string getName()const {return name;}
 		void setTopic(string topic) {this->topic=topic;} //admin
 		void setNsfw(bool nsfw) {this->nsfw=nsfw;} //admin
+		void setName(string name) {this->name=name;} //admin
 };
 
 #endif // CHAT_HPP_INCLUDED

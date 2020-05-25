@@ -8,46 +8,46 @@ using namespace std;
 class Discord
 {
 private:
-	vector<User*> users;
-	vector<Server> servers;
-	string serverFile;
-	string usersFile;
+    vector<User*> users;
+    vector<Server*> servers;
+    string serverFile;
+    string usersFile;
 public:
-	Discord(string serversFile="servers.txt",string usersFile="users.txt")
-	{
-		this->serverFile=serverFile;
-		this->usersFile=usersFile;
-		loadUsers();
-        //loadServers();
-	}
-	User* login()
+    Discord(string serversFile="servers.txt",string usersFile="users.txt")
     {
-    	while(1)
-    	{
-        	string username,password;
-        	cout << "Username:";
-        	cin >> username;
-        	cout << "Passowrd:";
-        	cin >> password;
-        	for(auto i=users.begin();i!=users.end();i++)
-        	{
-           	 	if(((*i)->getUsername())==username && ((*i)->getPassword())==password)
-            	{
-                	cout << "Login succesful!\n";
-                	return *i;
-            	}
-        	}
-        	cout << "Unsuccesful login. Try again.\n";
-    	}
-	}
-	void signUp()
+        this->serverFile=serverFile;
+        this->usersFile=usersFile;
+        //loadServers();
+    }
+    User* login()
+    {
+        while(1)
+        {
+            string username,password;
+            cout << "Username:";
+            cin >> username;
+            cout << "Passowrd:";
+            cin >> password;
+            for(auto i=users.begin();i!=users.end();i++)
+            {
+                if(((*i)->getUsername())==username && ((*i)->getPassword())==password)
+                {
+                    cout << "Login succesful!\n";
+                    return *i;
+                }
+            }
+            cout << "Unsuccesful login. Try again.\n";
+        }
+    }
+    void signUp()
     {
         User* userPointer=new User;
         userPointer->setup();
         users.push_back((User*)userPointer);
+        saveUsers();
     }
 
-	void loadUsers()
+    void loadUsers()
     {
         ifstream file(usersFile);
         if (file.is_open())
@@ -67,12 +67,38 @@ public:
         else
         {
             cout << "Unsuccesful onening of file " << usersFile << endl;
-            saveUsers();
+        }
+    }
+    User* findUserByTag(int tag)
+    {
+        for(auto i=users.begin();i!=users.end();i++)
+        {
+            if(tag==(*i)->getTag())
+            {
+                return (*i);
+            }
+        }
+        return NULL;
+    }
+    void listUsers(int tag=0)
+    {
+
+        for(auto i=users.begin();i!=users.end();i++)
+        {
+            if(tag!=(*i)->getTag())
+            {
+            cout<<(*i)->getTag()<<") ";
+            cout<<(*i)->getName()<<" ";
+            cout<<(*i)->getLastName()<<" ";
+            cout<<(*i)->getUsername()<<" ";
+            cout<<(*i)->getEmail()<<endl;
+            }
         }
     }
     void saveUsers()const
     {
-        ofstream file(usersFile);
+        ofstream file;
+        file.open (usersFile);
         for(auto i=users.begin();i!=users.end();i++)
         {
             file<<(*i)->getName()<<" ";
@@ -80,10 +106,9 @@ public:
             file<<(*i)->getUsername()<<" ";
             file<<(*i)->getTag()<<" ";
             file<<(*i)->getEmail()<<" ";
-            file<<(*i)->getPassword()<<" ";
+            file<<(*i)->getPassword()<<endl;
         }
         file.close();
     }
-
-}
+};
 #endif // DISCORD_HPP_INCLUDED

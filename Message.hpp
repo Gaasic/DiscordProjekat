@@ -19,11 +19,6 @@ class Message
 		}
 		string getText()const {return text;}
 		string getAuthor()const {return author;}
-
-		void editMessage(string newText)
-		{
-			text=newText;
-		}
 		friend ostream& operator<<(ostream& output, const Message& message)
     {
         output<<message.text<<"|"<<message.author<<endl;

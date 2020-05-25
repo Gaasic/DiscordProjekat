@@ -8,11 +8,15 @@ int User::numberOfUsers=0;
 
 int main()
 {
-	Discord discord;
-	discord.loadUsers();
-	while(1)
+    Discord discord;
+    discord.loadUsers();
+    bool isLoggedIn=false;
+    char choice;
+    while(1)
     {
-        char choice;
+    User* user;
+    while(!isLoggedIn)
+    {
         cout<<"Welcome back!"<<endl;
         cout<<"1) Login"<<endl;
         cout<<"2) Register"<<endl;
@@ -21,16 +25,18 @@ int main()
         cin>>choice;
         switch(choice)
         {
-        case 1:
+        case '1':
             {
-               // User* user=discord.login();
+                user=discord.login();
+                isLoggedIn=true;
                 break;
             }
-        case 2:
+        case '2':
             {
-                /*discord.signUp();*/
+                discord.signUp();
+                break;
             }
-        case 3:
+        case '3':
             {
                 cout<<"cao";
                 return 0;
@@ -38,5 +44,69 @@ int main()
 
         }
     }
-	return 0;
+    while(isLoggedIn)
+    {
+        cout<<"Discord"<<endl;
+        cout<<"1) DM someone"<<endl;
+        cout<<"2) Server someone"<<endl;
+        cout<<"3) Log out"<<endl;
+        cout<<"4) Exit"<<endl;
+        cin>>choice;
+        switch(choice)
+        {
+        case '1':
+            {
+                int receiverTag;
+                discord.listUsers(user->getTag());
+                cin>>receiverTag;
+                User* receiver=discord.findUserByTag(receiverTag);
+                if(receiver==NULL)
+                {
+                    cout<<"No users with that tag"<<endl;
+                    break;
+                }
+                Chat chat(user,receiver);
+                chat.loadMessages();
+                chat.printDM();
+                bool inChat=true;
+                while(inChat)
+                {
+                    cout<<"1) Send message\n2) Back\n->";
+                    cin>>choice;
+                    switch(choice)
+                    {
+                    case '1':
+                        {
+                            chat.sendMessage();
+                            chat.printDM();
+                            fflush(stdin);
+                            break;
+                        }
+                    case '2':
+                        {
+                            inChat=false;
+                            break;
+                        }
+                    }
+                }
+                chat.saveMessages();
+                break;
+            }
+        case '2':
+            {
+
+            }
+        case '3':
+            {
+                isLoggedIn=false;
+                break;
+            }
+        case '4':
+            {
+                return 0;
+            }
+        }
+    }
+
+    }
 }

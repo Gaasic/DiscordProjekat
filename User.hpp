@@ -1,6 +1,7 @@
 #ifndef USER_HPP_INCLUDED
 #define USER_HPP_INCLUDED
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -41,6 +42,10 @@ public:
     	cout << "Email: ";
     	cin >> email;
     	changePassword();
+    	this->name=name;
+    	this->lastName=lastName;
+    	this->username=username;
+    	this->email=email;
     }
 
 	string getName()const
@@ -90,13 +95,13 @@ public:
 	void changePassword()
 	{
 		string newPassword;
-        cout << "Password:"<<endl;
+        cout << "Password:";
         cin >> newPassword;
        	password=newPassword;
 	}
     friend ostream& operator<<(ostream& output, const User& user)
     {
-        output<<user.name<<" "<<user.lastName<<" "<<user.username<<" "<<user.tag<<" "<<user.email<<" "<<endl;
+        output<<user.tag<<") "<<user.username<<" "<<user.name<<" "<<user.lastName<<" "<<user.email<<" "<<endl;
         return output;
     }
 
