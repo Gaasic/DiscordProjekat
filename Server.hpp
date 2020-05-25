@@ -26,7 +26,7 @@ public:
 				cout<<"You do not have permission for that command."<<endl;
 				return;
 			}
-			for(auto i=members.begin();i<members.back();i++)
+			for(auto i=members.begin();i<members.end();i++)
 			{
 				if((*i)->getTag()==tag)
 				{
@@ -42,9 +42,9 @@ public:
 				cout<<"You do not have permission for this command."<<endl;
 				return;
 			}
-			for(int i=0;i<members.size();i++)
+			for(auto i=members.begin();i<members.end();i++)
 			{
-				if(admins.at(i)==tag)
+				if((*i)->getTag()==tag)
 				{
 					admins.erase(i);
 					cout<<"Succesfully removed admin."<<endl;
@@ -54,7 +54,7 @@ public:
 	}
 	TextChannel* addTextChannel(string name)
 	{
-		TextChannel* textChannelPoniter = new TextChannel(name,topic,nsfw);
+		TextChannel* textChannelPoniter = new TextChannel(name);
 		return textChannelPoniter;
 	}
 	void addTextChannelMain(User* user)
@@ -64,8 +64,8 @@ public:
 			if(user==admins.at(i) || user==owner)
 			{
 				cout<<"Channel name:";
-				string name;
-				cin<<name;
+				string chatName;
+				cin>>chatName;
 				chats.push_back(addTextChannel(name));
 				cout<<"Succesfully added a channel";
 				return;

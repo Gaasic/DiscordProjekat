@@ -83,7 +83,7 @@ class TextChannel
 		vector<Message*> messagez;
 		bool nsfw;
 	public:
-		TextChannel(string name,topic="",bool nsfw=false)
+		TextChannel(string name,string topic="",bool nsfw=false)
 		{
 			this->name=name;
 			this->topic=topic;
